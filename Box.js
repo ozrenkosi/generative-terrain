@@ -18,6 +18,7 @@ class Box {
     fill(this.color);
     box(this.size, this.size, this.pixelHeight);
 
+    // Draws the trees
     if (this.height > (forestLevel - 0.1) && this.height <= mountainPeakLevel) {
       this.tree.draw(this.pixelHeight);
     }
