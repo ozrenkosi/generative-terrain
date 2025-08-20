@@ -11,12 +11,53 @@
   <!-- p5.js v1.11.9 -->
   <script src="libraries/p5.js"></script>
   <!-- <script src="libraries/p5.sound.js"></script> -->
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bagel+Fat+One&family=Inter:opsz@14..32&display=swap"
+    rel="stylesheet">
 </head>
 
 <body>
   <script src="main.js"></script>
   <script src="Box.js"></script>
   <script src="Tree.js"></script>
+
+  <div class="userInterface">
+    <div class="row">
+      <p class="title">Camera type</p>
+      <div class="radioButtons">
+        <input type="radio" id="fixed" name="camera" checked>
+        <label for="fixed">Fixed</label>
+
+        <input type="radio" id="flying" name="camera">
+        <label for="flying">Flying</label>
+
+        <input type="radio" id="orbiting" name="camera">
+        <label for="orbiting">Orbiting</label>
+      </div>
+    </div>
+
+    <div class="row">
+      <p class="title">Terrain resolution</p>
+      <div class="radioButtons">
+        <input type="radio" id="lowRes" name="resolution">
+        <label for="lowRes">Low</label>
+
+        <input type="radio" id="medRes" name="resolution" checked>
+        <label for="medRes">Medium</label>
+
+        <input type="radio" id="highRes" name="resolution">
+        <label for="highRes">High</label>
+      </div>
+    </div>
+
+    <div class="row">
+      <p class="title">Export as GIF</p>
+      <button id="exportGifButton" type="button">Export</button>
+    </div>
+  </div>
 </body>
 
 </html>
