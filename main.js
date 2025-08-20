@@ -11,12 +11,18 @@ let colors = {
 };
 
 let boxes = [];
-let numOfBoxes = 40;
+let numOfBoxes = {
+  active: 40,
+  low: 20,
+  medium: 40,
+  high: 60
+};
 let terrainSize;
 let boxSize;
 let margin;
 
-const seaLevel = 0.4; // 0 is the deepest point of the water and 1 is the highest mountain peak
+// 0 is the deepest point of the water and 1 is the highest mountain peak
+const seaLevel = 0.4;
 const deepWaterLevel = 0.25;
 const grassLevel = 0.5;
 const forestLevel = 0.7;
@@ -26,53 +32,68 @@ let deepestPixelHeight = 20;
 let highestPixelHeight = 200;
 let seaLevelPixelHeight;
 
-let terrainSmoothness = 0.09;
+let terrainSmoothness = {
+  active: 0.09,
+  coarse: 0.15,
+  medium: 0.09,
+  smooth: 0.07
+};
 let animationSpeedFlying = 0.0002;
 let animationSpeedBreathing = 0.0001;
 let orbitSpeed = 0.0001;
 
-let mode = "fixed"; // default mode
+let cameraMode = "fixed"; // default mode
 
 function setup() {
   createCanvas(min(windowWidth, windowHeight), min(windowWidth, windowHeight), WEBGL);
 
   margin = width / 6;
-  terrainSize = width - (margin * 2);
-  boxSize = terrainSize / numOfBoxes;
   seaLevelPixelHeight = map(seaLevel, 0, 1, deepestPixelHeight, highestPixelHeight);
 
-  for (let i = 0; i < numOfBoxes; i++) {
-    boxes[i] = [];
-    for (let j = 0; j < numOfBoxes; j++) {
-      let x = -(width / 2) + margin + (i * boxSize) + (boxSize / 2);
-      let y = -(height / 2) + margin + (j * boxSize) + (boxSize / 2);
-      let z = 0;
+  setupTerrain(numOfBoxes.active);
 
-      boxes[i][j] = new Box(x, y, z, boxSize);
-    }
-  }
+  // UI event listeners
+  document.querySelectorAll('input[name="camera"]').forEach(radio => {
+    radio.addEventListener('change', () => {
+      if (radio.checked) {
+        cameraMode = radio.id; // "fixed", "flying", or "orbiting"
+      }
+    });
+  });
 
-  // Buttons
-  let btnFlying = createButton("Flying");
-  btnFlying.position(20, height - 40);
-  btnFlying.mousePressed(() => mode = "flying");
+  document.querySelectorAll('input[name="resolution"]').forEach(radio => {
+    radio.addEventListener('change', () => {
+      if (radio.checked) {
+        if (radio.id === "lowRes") {
+          numOfBoxes.active = numOfBoxes.low;
+          terrainSmoothness.active = terrainSmoothness.coarse;
+        }
+        if (radio.id === "medRes") {
+          numOfBoxes.active = numOfBoxes.medium;
+          terrainSmoothness.active = terrainSmoothness.medium;
+        }
+        if (radio.id === "highRes") {
+          numOfBoxes.active = numOfBoxes.high;
+          terrainSmoothness.active = terrainSmoothness.smooth;
+        }
 
-  let btnOrbiting = createButton("Orbiting");
-  btnOrbiting.position(75, height - 40);
-  btnOrbiting.mousePressed(() => mode = "orbiting");
+        setupTerrain(numOfBoxes.active); // rebuild terrain with new resolution
+      }
+    });
+  });
 
-  let btnFixed = createButton("Fixed");
-  btnFixed.position(140, height - 40);
-  btnFixed.mousePressed(() => mode = "fixed");
+  document.getElementById("exportGifButton").addEventListener("click", () => {
+    saveGif('mySketch', 5); // saves a 5 second GIF
+  });
 }
 
 function draw() {
   background(colors.background);
 
-  if (mode === "flying") {
+  if (cameraMode === "flying") {
     // fixed camera for flying animation
     camera(0, width, width / 1.5);
-  } else if (mode === "orbiting") {
+  } else if (cameraMode === "orbiting") {
     // orbiting camera for breathing animation
     camera(width * sin(millis() * orbitSpeed), width * cos(millis() * orbitSpeed), width / 1.7, 0, 0, 0, 0, 0, -1);
   } else {
@@ -83,9 +104,10 @@ function draw() {
   directionalLight(255, 198, 114, -1, 0.75, -1);
   ambientLight(200);
 
-  for (let i = 0; i < numOfBoxes; i++) {
-    for (let j = 0; j < numOfBoxes; j++) {
-      if (mode === "flying") {
+  // Draws the terrain
+  for (let i = 0; i < numOfBoxes.active; i++) {
+    for (let j = 0; j < numOfBoxes.active; j++) {
+      if (cameraMode === "flying") {
         boxes[i][j].update(perlinNoiseFlying(i, j)); // send height between 0 and 1
       } else {
         boxes[i][j].update(perlinNoiseBreathing(i, j)); // send height between 0 and 1
@@ -94,22 +116,33 @@ function draw() {
     }
   }
 
-  // Water
+  // Draws the water
   translate(0, 0, seaLevelPixelHeight / 2);
   fill(colors.shallowWater);
   box(terrainSize - 0.1, terrainSize - 0.1, seaLevelPixelHeight);
 }
 
+function setupTerrain(resolution) {
+  terrainSize = width - (margin * 2);
+  boxSize = terrainSize / resolution;
+
+  boxes = [];
+  for (let i = 0; i < resolution; i++) {
+    boxes[i] = [];
+    for (let j = 0; j < resolution; j++) {
+      let x = -(width / 2) + margin + (i * boxSize) + (boxSize / 2);
+      let y = -(height / 2) + margin + (j * boxSize) + (boxSize / 2);
+      let z = 0;
+
+      boxes[i][j] = new Box(x, y, z, boxSize);
+    }
+  }
+}
+
 function perlinNoiseFlying(x, y) {
-  return noise(x * terrainSmoothness, y * terrainSmoothness - millis() * animationSpeedFlying);
+  return noise(x * terrainSmoothness.active, y * terrainSmoothness.active - millis() * animationSpeedFlying);
 }
 
 function perlinNoiseBreathing(x, y) {
-  return noise(x * terrainSmoothness, y * terrainSmoothness, millis() * animationSpeedBreathing);
-}
-
-function keyPressed() {
-  if (key === 's') {
-    saveGif('mySketch', 5); // saves a 5 second GIF
-  }
+  return noise(x * terrainSmoothness.active, y * terrainSmoothness.active, millis() * animationSpeedBreathing);
 }
