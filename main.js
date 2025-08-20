@@ -5,7 +5,6 @@ let colors = {
   sand: "#cdaa65",
   grass: "#8db543",
   forest: "#41832d",
-  mountainPeak: "#ecece8",
   treeTrunk: "#422e0c",
   treeLeaves: "#36600f"
 };
@@ -26,7 +25,6 @@ const seaLevel = 0.4;
 const deepWaterLevel = 0.25;
 const grassLevel = 0.5;
 const forestLevel = 0.7;
-const mountainPeakLevel = 0.8;
 
 let deepestPixelHeight = 20;
 let highestPixelHeight = 200;
