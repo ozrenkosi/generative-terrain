@@ -1,7 +1,7 @@
 let colors = {
   background: "#E6E3DC",
   deepWater: "#04417a",
-  shallowWater: "#238aeb80",
+  shallowWater: "#238aebb0",
   sand: "#cdaa65",
   grass: "#8db543",
   forest: "#41832d",
