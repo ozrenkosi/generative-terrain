@@ -1,0 +1,41 @@
+class Box {
+  constructor(x, y, z, boxSize) {
+    this.position = createVector(x, y, z);
+    this.size = boxSize;
+    this.color = null;
+    this.height = 0.5; // 0 is the deepest point of the water and 1 is the highest mountain peak
+    this.pixelHeight = 100;
+
+    this.tree = new Tree();
+  }
+
+  draw() {
+    noStroke();
+
+    push();
+
+    translate(this.position.x, this.position.y, this.position.z + (this.pixelHeight / 2));
+    fill(this.color);
+    box(this.size, this.size, this.pixelHeight);
+
+    if (this.height > (forestLevel - 0.1) && this.height <= mountainPeakLevel) {
+      this.tree.draw(this.pixelHeight);
+    }
+
+    pop();
+  }
+
+  update(value) {
+    this.height = value;
+    this.pixelHeight = map(this.height, 0, 1, deepestPixelHeight, highestPixelHeight);
+    this.color = this.calculateColor();
+  }
+
+  calculateColor() {
+    if (this.height <= deepWaterLevel) return colors.deepWater;
+    if (this.height <= grassLevel) return colors.sand;
+    if (this.height <= forestLevel) return colors.grass;
+    if (this.height <= mountainPeakLevel) return colors.forest;
+    return colors.mountainPeak;
+  }
+}
