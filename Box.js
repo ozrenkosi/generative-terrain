@@ -19,7 +19,7 @@ class Box {
     box(this.size, this.size, this.pixelHeight);
 
     // Draws the trees
-    if (this.height > (forestLevel - 0.1) && this.height <= mountainPeakLevel) {
+    if (this.height > forestLevel - 0.1) {
       this.tree.draw(this.pixelHeight);
     }
 
@@ -34,9 +34,8 @@ class Box {
 
   calculateColor() {
     if (this.height <= deepWaterLevel) return colors.deepWater;
-    if (this.height <= grassLevel) return colors.sand;
-    if (this.height <= forestLevel) return colors.grass;
-    if (this.height <= mountainPeakLevel) return colors.forest;
-    return colors.mountainPeak;
+    if (this.height < grassLevel) return colors.sand;
+    if (this.height < forestLevel) return colors.grass;
+    return colors.forest;
   }
 }
