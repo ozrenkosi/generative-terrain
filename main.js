@@ -18,19 +18,23 @@ let numOfBoxes = {
   ultra: 512,
   insane: 1024
 };
-let terrainSize;
-let boxSize;
+let terrainWidth;
+let boxWidth;
 let margin;
 
-// 0 is the deepest point of the water and 1 is the highest mountain peak
-const seaLevel = 0.4;
-const deepWaterLevel = 0.25;
-const grassLevel = 0.5;
-const forestLevel = 0.7;
+let terrainHeight = {
+  // 0 is the deepest point of the water and 1 is the highest mountain peak
+  seaLevel: 0.4,
+  deepWaterLevel: 0.25,
+  grassLevel: 0.5,
+  forestLevel: 0.7
+};
 
-let deepestPixelHeight = 20;
-let highestPixelHeight = 200;
-let seaLevelPixelHeight;
+let terrainPixelHeight = {
+  deepest: 20,
+  highest: 200,
+  seaLevel: null
+};
 
 let terrainSmoothness = {
   active: 0.09,
@@ -50,7 +54,7 @@ function setup() {
   createCanvas(min(windowWidth, windowHeight), min(windowWidth, windowHeight), WEBGL);
 
   margin = width / 6;
-  seaLevelPixelHeight = map(seaLevel, 0, 1, deepestPixelHeight, highestPixelHeight);
+  terrainPixelHeight.seaLevel = map(terrainHeight.seaLevel, 0, 1, terrainPixelHeight.deepest, terrainPixelHeight.highest);
 
   setupTerrain(numOfBoxes.active);
 
@@ -102,7 +106,7 @@ function draw() {
 
   if (cameraMode === "flying") {
     // fixed camera for flying animation
-    camera(0, width, width / 1.5);
+    camera(0, terrainWidth - (terrainWidth / 2.5), terrainPixelHeight.highest + (boxWidth * 2), 0, 0, 80, 0, 1, 0);
   } else if (cameraMode === "orbiting") {
     // orbiting camera for breathing animation
     camera(width * sin(millis() * orbitSpeed), width * cos(millis() * orbitSpeed), width / 1.7, 0, 0, 0, 0, 0, -1);
@@ -127,24 +131,24 @@ function draw() {
   }
 
   // Draws the water
-  translate(0, 0, seaLevelPixelHeight / 2);
+  translate(0, 0, terrainPixelHeight.seaLevel / 2);
   fill(colors.shallowWater);
-  box(terrainSize - 0.1, terrainSize - 0.1, seaLevelPixelHeight);
+  box(terrainWidth - 0.1, terrainWidth - 0.1, terrainPixelHeight.seaLevel);
 }
 
 function setupTerrain(resolution) {
-  terrainSize = width - (margin * 2);
-  boxSize = terrainSize / resolution;
+  terrainWidth = width - (margin * 2);
+  boxWidth = terrainWidth / resolution;
 
   boxes = [];
   for (let i = 0; i < resolution; i++) {
     boxes[i] = [];
     for (let j = 0; j < resolution; j++) {
-      let x = -(width / 2) + margin + (i * boxSize) + (boxSize / 2);
-      let y = -(height / 2) + margin + (j * boxSize) + (boxSize / 2);
+      let x = -(width / 2) + margin + (i * boxWidth) + (boxWidth / 2);
+      let y = -(height / 2) + margin + (j * boxWidth) + (boxWidth / 2);
       let z = 0;
 
-      boxes[i][j] = new Box(x, y, z, boxSize);
+      boxes[i][j] = new Box(x, y, z, boxWidth);
     }
   }
 }
