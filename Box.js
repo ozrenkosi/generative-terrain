@@ -33,9 +33,17 @@ class Box {
   }
 
   calculateColor() {
-    if (this.height <= terrainHeight.deepWaterLevel) return colors.deepWater;
-    if (this.height < terrainHeight.grassLevel) return colors.sand;
-    if (this.height < terrainHeight.forestLevel) return colors.grass;
-    return colors.forest;
+    if (this.height <= terrainHeight.deepWaterLevel) {
+      return colors.deepWater;
+    }
+    else if (this.height < terrainHeight.grassLevel) {
+      return colors.sand;
+    }
+    else if (this.height < terrainHeight.forestLevel) {
+      return colors.grass;
+    }
+    else {
+      return colors.forest;
+    }
   }
 }
