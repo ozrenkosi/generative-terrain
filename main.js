@@ -14,9 +14,7 @@ let numOfBoxes = {
   active: 40,
   low: 20,
   medium: 40,
-  high: 60,
-  ultra: 512,
-  insane: 1024
+  high: 60
 };
 let terrainWidth;
 let boxWidth;
@@ -40,9 +38,7 @@ let terrainSmoothness = {
   active: 0.09,
   coarse: 0.15,
   medium: 0.09,
-  smooth: 0.07,
-  ultraSmooth: 0.01,
-  insaneSmooth: 0.001
+  smooth: 0.07
 };
 let animationSpeedFlying = 0.0002;
 let animationSpeedBreathing = 0.0001;
@@ -81,14 +77,6 @@ function setup() {
         else if (radio.id === "highRes") {
           numOfBoxes.active = numOfBoxes.high;
           terrainSmoothness.active = terrainSmoothness.smooth;
-        }
-        else if (radio.id === "512Res") {
-          numOfBoxes.active = numOfBoxes.ultra;
-          terrainSmoothness.active = terrainSmoothness.ultraSmooth;
-        }
-        else if (radio.id === "1024Res") {
-          numOfBoxes.active = numOfBoxes.insane;
-          terrainSmoothness.active = terrainSmoothness.insaneSmooth;
         }
 
         setupTerrain(numOfBoxes.active); // rebuild terrain with new resolution
