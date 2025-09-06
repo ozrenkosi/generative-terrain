@@ -14,4 +14,4 @@ It is customizable with parameters such as **camera position** and **terrain res
 ## Demo
 
 Live demo available here:  
-ozrenkosi.github.io/generative-terrain/
+[ozrenkosi.github.io/generative-terrain/](https://ozrenkosi.github.io/generative-terrain/)
